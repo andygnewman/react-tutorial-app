@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Board from './components/board';
+import ResetButton from './components/reset-button';
 
 function calculateWinner(squares) {
   const lines = [
@@ -20,59 +22,6 @@ function calculateWinner(squares) {
       squares[a] === squares[c]
     );
   });
-}
-
-function ResetButton(props) {
-  if (props.step !== props.steps) {
-    const reset = `Reset game to this step (${props.step})`;
-
-    return (
-      <button onClick={props.onClick}>
-        {reset}
-      </button>
-    );
-  }
-  return null;
-}
-
-function Square(props) {
-  return (
-    <button className="square" onClick={props.onClick}>
-      {props.value}
-    </button>
-  );
-}
-
-function Board(props) {
-
-  const renderSquare = (i) => {
-    return (
-      <Square
-        value={props.squares[i]}
-        onClick={() => props.onClick(i)}
-      />
-    );
-  }
-
-  return (
-    <div>
-      <div className="board-row">
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
-      </div>
-      <div className="board-row">
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className="board-row">
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
-    </div>
-  );
 }
 
 class Game extends React.Component {
@@ -120,6 +69,7 @@ class Game extends React.Component {
     const winningLine = calculateWinner(current.squares);
     let status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
     if (winningLine) status = `Winner is: ${current.squares[winningLine[0]]}`;
+    if (current.squares.filter(square => !square).length === 0) status = 'It was a draw';
 
     const moves = this.state.history.map((step, move) => {
       const desc = move ? `Go to move # ${move}` : 'Go to game start';
